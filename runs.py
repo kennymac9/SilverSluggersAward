@@ -78,7 +78,6 @@ for index, row in allData.iterrows():
     else:
         allData.set_value(index, 'weight', 1)
 
-print(allData.where(allData['playerid'] == 8090).dropna())
 # add newly calculated weighted stats to our dataframe as columns
 allData['weightOBP'] = allData['weight']*allData['OBP']
 allData['weightPA'] = allData['weight']*allData['PA']
@@ -126,10 +125,4 @@ for i in range(len(y_pred)):
 
 weightedRunStats2019['runsPredicted'] = y_pred_list
 print(weightedRunStats2019.sort_values(by=['runsPredicted'], ascending=False))
-
-
-# In[ ]:
-
-
-
 
