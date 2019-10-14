@@ -34,6 +34,9 @@ allData = allData.dropna()
 # sort all the rows by player ID first, then season. Makes it easier to figure out which player played which seasons
 allData = allData.sort_values(by=['playerid', 'Season'])
 
+# scale relevants stats
+allData[['FB%+', 'Hard%', 'Pull%', 'SLG', 'PA']] = preprocessing.scale(allData[['FB%+', 'Hard%', 'Pull%', 'SLG', 'PA']])
+
 # assign X and Y sets for regression
 X = allData[['FB%+', 'Hard%', 'Pull%', 'SLG', 'PA']].values
 Y = allData[['HR']].values
