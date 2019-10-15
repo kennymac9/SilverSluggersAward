@@ -1,13 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
-
-
-
-
-
-# In[236]:
+# In[10]:
 
 
 import pandas as pd, numpy as np, matplotlib, matplotlib.pyplot as plt
@@ -18,34 +12,23 @@ import seaborn as seabornInstance
 from sklearn.model_selection import train_test_split 
 from sklearn.linear_model import LinearRegression
 from sklearn import metrics
-get_ipython().run_line_magic('matplotlib', 'inline')
 
-
-# In[237]:
-
-
+# read the CSV with data of all players
 allData = pd.read_csv('all-np.csv')
-
-
-# In[238]:
-
 
 # Some preprocessing on the column names
 allData.astype({'Season': 'category'}).dtypes # set season to category instead of int
 allData.set_index(['playerid', 'Name'])
 
-# drop NaN values, which only come into play for pitchers running the bases (a very atypical occurrence)
-allData = allData.dropna()
-
 # sort all the rows by player ID first, then season. Makes it easier to figure out which player played which seasons
 allData = allData.sort_values(by=['playerid', 'Season'])
 
-# scale all relevant stats
-allData[['OBP', 'PA', 'wSB', 'UBR']] = preprocessing.scale(allData[['OBP', 'PA', 'wSB', 'UBR']])
+# scale relevants stats
+allData[['BABIP', 'Hard%', 'Med%', 'FB%+', 'LD+%', 'UBR', 'K%']] = preprocessing.scale(allData[['BABIP', 'Hard%', 'Med%', 'FB%+', 'LD+%', 'UBR', 'K%']])
 
 # assign X and Y sets for regression
-X = allData[['OBP', 'PA', 'wSB', 'UBR']].values
-Y = allData[['R']].values
+X = allData[['BABIP', 'Hard%', 'Med%', 'FB%+', 'LD+%', 'UBR', 'K%']].values
+Y = allData[['AVG']].values
 
 # dictionary assigning number of years in our data set played to each player
 playerYears = dict() # dict of {'player ID': 'years in our data set that they played (1, 2, or 3)'}
@@ -78,15 +61,19 @@ for index, row in allData.iterrows():
     else:
         allData.set_value(index, 'weight', 1)
 
+'BABIP', 'Hard%', 'Med%', 'FB%+', 'LD+%', 'UBR', 'K%'
 # add newly calculated weighted stats to our dataframe as columns
-allData['weightOBP'] = allData['weight']*allData['OBP']
-allData['weightPA'] = allData['weight']*allData['PA']
-allData['weightSB'] = allData['weight']*allData['wSB']
+allData['weightBABIP'] = allData['weight']*allData['BABIP']
+allData['weightHH'] = allData['weight']*allData['Hard%']
+allData['weightMed'] = allData['weight']*allData['Med%']
+allData['weightFB'] = allData['weight']*allData['FB%+']
+allData['weightLD'] = allData['weight']*allData['LD+%']
 allData['weightUBR'] = allData['weight']*allData['UBR']
+allData['weightK'] = allData['weight']*allData['K%']
 
 # sum up weighted averages by player, so that all years are combined
 weightedRunStats2019 = allData.groupby('playerid').sum()
-weightedRunStats2019 = weightedRunStats2019[['weightOBP', 'weightPA', 'weightSB', 'weightUBR']]
+weightedRunStats2019 = weightedRunStats2019[['weightBABIP', 'weightHH', 'weightMed', 'weightFB', 'weightLD', 'weightUBR', 'weightK']]
 
 # we lost player names when doing the group by and sum, so get the player names and put it back in our new data frame
 names = []
@@ -101,7 +88,7 @@ cols = cols[-2:] + cols[:-2]
 weightedRunStats2019 = weightedRunStats2019[cols]
 
 
-# In[239]:
+# In[13]:
 
 
 # X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2, random_state=0)
@@ -109,20 +96,26 @@ regressor = LinearRegression()
 regressor.fit(X, Y)
 
 
-# In[240]:
+# In[14]:
 
 
-X_2019 = weightedRunStats2019[['weightOBP', 'weightPA', 'weightSB', 'weightUBR']].values
+X_2019 = weightedRunStats2019[['weightBABIP', 'weightHH', 'weightMed', 'weightFB', 'weightLD', 'weightUBR', 'weightK']].values
 y_pred = regressor.predict(X_2019)
 
 
-# In[241]:
+# In[15]:
 
 
 y_pred_list = [] # list of y_pred so we can add it to a dataframe
 for i in range(len(y_pred)):
     y_pred_list.append(y_pred[i][0])
 
-weightedRunStats2019['runsPredicted'] = y_pred_list
-print(weightedRunStats2019.sort_values(by=['runsPredicted'], ascending=False))
+weightedRunStats2019['AVGPredicted'] = y_pred_list
+print(weightedRunStats2019.sort_values(by=['AVGPredicted'], ascending=False))
+
+
+# In[ ]:
+
+
+
 
