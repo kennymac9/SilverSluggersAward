@@ -50,14 +50,14 @@ def recall(predictions, winners, year, value):
                 for name in winners[league][position]['stats'][year]['names']:
                     try:
                         index_elem = predictions[league][position].index(name)
-                        if index_elem <= value*3:
+                        if index_elem < value*3:
                             counter = counter + 1
                     except ValueError:
                         continue
             else:
                 try:
                     index_elem = predictions[league][position].index(winners[league][position]['stats'][year]['name'])
-                    if index_elem <= value:
+                    if index_elem < value:
                         counter = counter + 1
                 except ValueError:
                     continue
