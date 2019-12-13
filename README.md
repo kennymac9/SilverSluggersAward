@@ -12,9 +12,9 @@ Classification
 - This is done with files SilverSluggers_NaiveBayes.py and knn.py, which output results for award winners. 
 
 To recreate the process we used:
-python masterRegressions.py
-Use Excel to match up predicted with actual stats
-python Accuracy.py
-python SilverSluggers_NaiveBayes.py
-python knn.py
+python masterRegressions.py\
+Use Excel to match up predicted with actual stats\
+python Accuracy.py\
+python SilverSluggers_NaiveBayes.py\
+python knn.py\
 
