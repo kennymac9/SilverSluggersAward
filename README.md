@@ -1,6 +1,6 @@
 # Silver Slugger Data Science Project
 
-Edward Yuan, Daniel Quinn, Kenny McAvoy, Rayyan Karim
+Kenny McAvoy, Daniel Quinn, Edward Yuan, Rayyan Karim
 
 Regression
 - The initial statistics used for creating the regression models are found in the all-np.csv, all-np14-16.csv, all-np15-17.csv, and all-np17-19.csv files.
